@@ -1,190 +1,196 @@
-
-class: CommandLineTool
-label: Pindel-Somatic
 cwlVersion: v1.0
+class: CommandLineTool
+
+doc: "pindel somatic mutation calling"
+
 baseCommand: [python, /opt/pindel.py, -t, NORMAL, -t TUMOR]
-requirements:
-  - class: "DockerRequirement"
-    dockerPull: "opengenomics/pindel:0.2.5b8"
+
+hints:
+  DockerRequirement:
+    dockerPull: quay.io/opengenomics/pindel
 
 inputs:
-  - id: "normal"
+  normal:
     type: File
     inputBinding:
       prefix: -b
 
-  - id: "tumor"
+  tumor:
     type: File
     inputBinding:
       prefix: -b
 
-  - id: "reference"
+  reference:
     type: File
+    doc: |
+      the genome reference file
     inputBinding:
       prefix: -r
 
-  - id: "centromere"
-    type: File
+  centromere:
+    type: File?
+    doc: |
+      list of regions to exclude (chr, start, end)
     inputBinding:
       prefix: -J
 
-  - id: "referenceName"
-    type: string
-    default: HG19
+  referenceName:
+    type: string?
+    doc: |
+      the genome reference ID, e.g. HG19 (default: genome)
     inputBinding:
       prefix: -R
 
-  - id: "windowSize"
-    type: int
+  windowSize:
+    type: int?
     default: 2
     inputBinding:
       prefix: --window_size
 
-  - id: "procs"
-    type: int
+  procs:
+    type: int?
     default: 2
     inputBinding:
       prefix: --number_of_procs
 
-  - id: "normal_insert_size"
-    type: ['null', int]
+  normal_insert_size:
+    type: int?
     inputBinding:
       prefix: -s
 
-  - id: "tumor_insert_size"
-    type: ['null', int]
+  tumor_insert_size:
+    type: int?
     inputBinding:
       prefix: -s
 
-  - id: "report_inversions"
+  report_inversions:
     type: boolean?
     default: false
     inputBinding:
       prefix: --report_inversions
 
-  - id: "report_duplications"
+  report_duplications:
     type: boolean?
     default: false
     inputBinding:
       prefix: --report_duplications
 
-  - id: "report_long_insertions"
+  report_long_insertions:
     type: boolean?
     default: false
     inputBinding:
       prefix: --report_long_insertions
 
-  - id: "report_breakpoints"
+  report_breakpoints:
     type: boolean?
     default: false
     inputBinding:
       prefix: --report_breakpoints
 
-  - id: "report_only_close_mapped_reads"
+  report_only_close_mapped_reads:
     type: boolean?
     default: false
     inputBinding:
       prefix: -S
 
-  - id: "outputRawFile"
-    type: string
+  outputRawFile:
+    type: string?
     default: pindel.raw
     inputBinding:
       prefix: -o1
   
-  - id: "outputVcfFile"
-    type: string
+  outputVcfFile:
+    type: string?
     default: pindel.vcf
     inputBinding:
       prefix: -o2
   
-  - id: "outputSomaticVcfFile"
-    type: string
+  outputSomaticVcfFile:
+    type: string?
     default: pindel_somatic.vcf
     inputBinding:
       prefix: -o3
   
-  - id: "somatic_vaf"
-    type: float
+  somatic_vaf:
+    type: float?
     default: 0.08
     inputBinding:
       prefix: --somatic_vaf
 
-  - id: "somatic_cov"
-    type: int
+  somatic_cov:
+    type: int?
     default: 20
     inputBinding:
       prefix: --somatic_cov
 
-  - id: "somatic_hom"
-    type: int
+  somatic_hom:
+    type: int?
     default: 6
     inputBinding:
       prefix: --somatic_hom
 
-  - id: "min_inversion_size"
-    type: int
+  min_inversion_size:
+    type: int?
     default: 50
     inputBinding:
       prefix: --min_inversion_size
 
-  - id: min_num_matched_bases
-    type: int
+  min_num_matched_bases:
+    type: int?
     default: 30
     inputBinding:
       prefix: -d
 
-  - id: max_range_index
-    type: int
+  max_range_index:
+    type: int?
     default: 4
     inputBinding:
       prefix: -x
 
-  - id: additional_mismatch
-    type: int
+  additional_mismatch:
+    type: int?
     default: 1
     inputBinding:
       prefix: -a
   
-  - id: min_perfect_match_around_BP
-    type: int
+  min_perfect_match_around_BP:
+    type: int?
     default: 3
     inputBinding:
       prefix: -m
   
-  - id: sequencing_error_rate
-    type: float
+  sequencing_error_rate:
+    type: float?
     default: 0.01
     inputBinding:
       prefix: --sequencing_error_rate
 
-  - id: maximum_allowed_mismatch_rate
-    type: float
+  maximum_allowed_mismatch_rate:
+    type: float?
     default: 0.02
     inputBinding:
       prefix: -u
   
-  - id: sensitivity
-    type: float
+  sensitivity:
+    type: float?
     default: 0.95
     inputBinding:
       prefix: --sensitivity
 
 
 outputs:
-  - id: "vcf"
+  vcf:
     type: File
     outputBinding:
-      glob: pindel.vcf
+      glob: $(inputs.outputVcfFile)
 
-  - id: "somatic_vcf"
+  somatic_vcf:
     type: File
     outputBinding:
-      glob: pindel_somatic.vcf
+      glob: $(inputs.outputSomaticVcfFile)
       
-  - id: "rawFile"
+  rawFile:
     type: File
     outputBinding:
-      glob: pindel.raw
+      glob: $(inputs.outputRawFile)
 
-        

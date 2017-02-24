@@ -1,0 +1,26 @@
+{
+  "reference": {
+    "path": "http://hgwdev.cse.ucsc.edu/~jeltje/public_data/genome.fa.gz",
+    "class": "File"
+  },
+  "normal": {
+    "path":"https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/data_for_testing/HCC1143_ds/HCC1143_BL.bam",
+    "class": "File"
+  },
+  "tumor": {
+    "path":"https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/data_for_testing/HCC1143_ds/HCC1143.bam",
+    "class": "File"
+  },
+  "somatic_vcf": {
+    "path": "/tmp/somatic.vcf",
+    "class": "File"
+  },
+  "vcf": {
+    "path": "/tmp/pindel.vcf",
+    "class": "File"
+  },
+  "rawFile": {
+    "path": "/tmp/pindel.raw",
+    "class": "File"
+  }
+}

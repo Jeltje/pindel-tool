@@ -11,6 +11,14 @@ import subprocess32 as subprocess
 import datetime
 from multiprocessing import Pool
 import vcf
+import gzip
+
+def gunzip(infile, outfile):
+    inF = gzip.GzipFile(infile, 'rb')
+    s = inF.read()
+    inF.close()
+    with open(outfile, 'wb') as outF:
+        outF.write(s)
 
 def execute(cmd, output=None):
     import subprocess, sys, shlex
@@ -181,7 +189,7 @@ def __main__():
     logging.basicConfig(level=logging.INFO)
     time.sleep(1) #small hack, sometimes it seems like docker file systems aren't avalible instantly
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('-r', dest='inputFastaFile', required=True, help='the reference file')
+    parser.add_argument('-r', dest='inputFastaFile', required=True, help='the reference file, can be gzipped')
     parser.add_argument('-R', dest='inputFastaName', default="genome", help='the reference name')
 
     parser.add_argument('-b', dest='inputBamFiles', default=[], action="append", help='the bam file')
@@ -268,6 +276,13 @@ def __main__():
         seq_hash = {}
         newInputFiles = []
         i = 0
+        # unzip input genome if necessary
+        if args.inputFastaFile.endswith('.gz'):
+            new_ref = os.path.join(args.workdir, "reference.fa")
+            gunzip(args.inputFastaFile, new_ref)
+            subprocess.check_call( ["samtools", "faidx", new_ref] )
+            args.inputFastaFile = new_ref
+
         #make sure the BAMs are indexed and get the mean insert sizes
         for inputBamFile, inputBamIndex, insertSize, sampleTag in zip(inputBamFiles, inputBamFileIndexes, insertSizes, sampleTags ):
             inputFastaFile, inputBamFile = indexBam(args.workdir, args.inputFastaFile, inputBamFile, i, inputBamIndex)
