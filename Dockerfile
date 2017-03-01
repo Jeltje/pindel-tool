@@ -7,7 +7,7 @@ RUN     pip install PyVCF subprocess32
 
 WORKDIR /opt
 
-RUN		mkdir /opt/bin
+RUN	mkdir /opt/bin
 RUN     wget https://github.com/samtools/samtools/releases/download/1.2/samtools-1.2.tar.bz2
 RUN     tar xvjf samtools-1.2.tar.bz2
 RUN     cd /opt/samtools-1.2 && make && make install

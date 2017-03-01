@@ -11,14 +11,15 @@ import subprocess32 as subprocess
 import datetime
 from multiprocessing import Pool
 import vcf
-import gzip
 
 def gunzip(infile, outfile):
-    inF = gzip.GzipFile(infile, 'rb')
-    s = inF.read()
-    inF.close()
-    with open(outfile, 'wb') as outF:
-        outF.write(s)
+    cmd = (' ').join(['zcat', infile])
+    with open(outfile, 'w') as outF:
+        p = subprocess.Popen(cmd, shell=True, stdout=outF, stderr=subprocess.PIPE)
+    stdout,stderr =  p.communicate()
+    if len(stderr):
+        print "unzip command failed:", stderr
+        raise Exception("unzip failed")
 
 def execute(cmd, output=None):
     import subprocess, sys, shlex
