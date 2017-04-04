@@ -13,7 +13,7 @@ from multiprocessing import Pool
 import vcf
 
 def gunzip(infile, outfile):
-    cmd = (' ').join(['zcat', infile])
+    cmd = ' '.join(['zcat', infile])
     with open(outfile, 'w') as outF:
         p = subprocess.Popen(cmd, shell=True, stdout=outF, stderr=subprocess.PIPE)
     stdout,stderr =  p.communicate()
